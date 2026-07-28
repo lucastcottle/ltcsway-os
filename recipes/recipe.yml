@@ -17,17 +17,24 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
+  # Pre-installed Homebrew with auto-setup on first boot
+  - type: containerfile
+    snippets:
+      - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
+      - RUN /usr/bin/systemctl preset brew-setup.service && \
+            /usr/bin/systemctl preset brew-update.timer && \
+            /usr/bin/systemctl preset brew-upgrade.timer
+
   - type: script
     scripts:
       - clone-dotfiles.sh
+      - addbrewjustimport.sh
+      - install-brew-packages.sh
 
   - type: rpm-ostree
     install:
       - zsh
-      - stow
-      - neovim
       - gammastep
-      - edid-decode
 
     remove:
       - firefox
