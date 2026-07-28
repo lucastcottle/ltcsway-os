@@ -14,11 +14,13 @@ This image includes my preferred tools, dotfiles, and configurations baked in, w
 - **My personal dotfiles**
   - Cloned into `~/repos/dotfiles` on first login
 - **Zsh as default shell**
-  - Pre-installed with `stow` for dotfile management
+- **Homebrew pre-installed**
+  - Pulled in via the `ghcr.io/ublue-os/brew` image at build time
+  - On first login, `~/.Brewfile` is auto-bundled to install user tools (`stow`, `neovim`)
+  - ublue `brew.just` recipes imported for easy management
 - **Preinstalled applications**
-  - Common Flatpaks: Firefox, Discord, Steam, Spotify, Stremio, GNOME Boxes, Transmission
-  - Native tools: `zsh`, `nvim`, `stow`
-  - Non-Flathub Flatpak: [1Password](https://1password.com/linux/)
+  - Flatpaks: Firefox, Discord, Steam, Spotify, Stremio, Transmission, `org.freedesktop.Platform.codecs-extra`
+  - Native RPM tools: `zsh`, `gammastep`
 
 
 ## How It Works
@@ -34,7 +36,8 @@ This image includes my preferred tools, dotfiles, and configurations baked in, w
 
 - Clones my dotfiles into `~/repos/dotfiles`
 - Sets default shell to `zsh` for new users
-- Installs Flatpaks, including custom repo (1Password)
+- Installs Flatpaks
+- Runs `brew bundle --file=~/.Brewfile` on first login to install user tools
 - Applies any custom system configs under `system/`
 
 
@@ -43,7 +46,12 @@ This image includes my preferred tools, dotfiles, and configurations baked in, w
 If you need to re-stow or manually apply dotfiles:
 ```bash
 cd ~/repos/dotfiles
-stow . 
+stow .
+```
+
+To manually run the Homebrew bundle:
+```bash
+brew bundle --file=~/.Brewfile
 ```
 
 ## Building It Yourself
