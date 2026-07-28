@@ -27,6 +27,7 @@ modules:
       - stow
       - neovim
       - gammastep
+      - edid-decode
 
     remove:
       - firefox
