@@ -22,6 +22,13 @@ modules:
     snippets:
       - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
 
+  - type: systemd
+    system:
+      enabled:
+        - brew-setup.service
+        - brew-update.timer
+        - brew-upgrade.timer
+
   - type: script
     scripts:
       - clone-dotfiles.sh
