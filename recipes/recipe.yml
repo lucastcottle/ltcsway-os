@@ -41,7 +41,7 @@ modules:
         - gamescope
         - scx-scheds
         - steam
-      allow_erasing: true
+      allow-erasing: true
 
   # Enable scx_lavd as the default scheduler via scx_loader
   - type: systemd
