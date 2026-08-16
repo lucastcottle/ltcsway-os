@@ -22,6 +22,22 @@ modules:
     snippets:
       - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
 
+  # falcond + falcond-gui: COPR fc44 package missing falcond-gui, pull fc43 RPM as workaround
+  # falcond and falcond-gui have a circular dependency, so we install both with --nodeps
+  - type: containerfile
+    snippets:
+      - >-
+        RUN dnf install -y dnf-plugins-core &&
+        dnf copr enable -y gloriouseggroll/nobara-44 &&
+        dnf download --destdir=/tmp/falcond-rpms falcond-2.0.14 falcond-profiles &&
+        dnf copr disable -y gloriouseggroll/nobara-44 &&
+        dnf copr enable -y gloriouseggroll/nobara-43 &&
+        dnf download --destdir=/tmp/falcond-rpms falcond-gui &&
+        dnf copr disable -y gloriouseggroll/nobara-43 &&
+        dnf remove -y dnf-plugins-core &&
+        rpm -ivh --nodeps /tmp/falcond-rpms/*.rpm &&
+        rm -rf /tmp/falcond-rpms /var/cache/dnf
+
   - type: systemd
     system:
       enabled:
@@ -29,7 +45,7 @@ modules:
         - brew-update.timer
         - brew-upgrade.timer
 
-  # Gaming: Nobara COPR (gamescope, falcond) + CachyOS COPR (scx-scheds)
+  # Gaming: Nobara COPR (gamescope) + CachyOS COPR (scx-scheds)
   - type: dnf
     repos:
       files:
@@ -39,8 +55,6 @@ modules:
       install-weak-deps: false
       packages:
         - gamescope
-        - falcond
-        - falcond-gui
         - scx-scheds
 
   - type: systemd
