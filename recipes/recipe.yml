@@ -33,7 +33,7 @@ modules:
   - type: dnf
     repos:
       files:
-        - https://copr.fedorainfracloud.org/coprs/gloriouseggroll/nobara-42/repo/fedora-42/gloriouseggroll-nobara-42.repo
+        - https://copr.fedorainfracloud.org/coprs/gloriouseggroll/nobara-44/repo/fedora-44/gloriouseggroll-nobara-44.repo
     install:
       install-weak-deps: false
       packages:
@@ -45,7 +45,7 @@ modules:
   - type: dnf
     repos:
       files:
-        - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-42/bieszczaders-kernel-cachyos-addons.repo
+        - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-44/bieszczaders-kernel-cachyos-addons.repo
     install:
       install-weak-deps: false
       packages:
