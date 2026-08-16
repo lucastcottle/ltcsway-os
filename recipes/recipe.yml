@@ -29,16 +29,45 @@ modules:
         - brew-update.timer
         - brew-upgrade.timer
 
+  # Nobara COPR — gamescope + falcond
+  - type: dnf
+    repos:
+      files:
+        - https://copr.fedorainfracloud.org/coprs/gloriouseggroll/nobara-42/repo/fedora-42/gloriouseggroll-nobara-42.repo
+    install:
+      install-weak-deps: false
+      packages:
+        - gamescope
+        - falcond
+        - falcond-gui
+
+  # CachyOS COPR — scx-scheds for LAVD scheduler
+  - type: dnf
+    repos:
+      files:
+        - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-42/bieszczaders-kernel-cachyos-addons.repo
+    install:
+      install-weak-deps: false
+      packages:
+        - scx-scheds
+
+  - type: systemd
+    system:
+      enabled:
+        - falcond.service
+
   - type: script
     scripts:
       - clone-dotfiles.sh
       - addbrewjustimport.sh
       - install-brew-packages.sh
+      - setup-falcond.sh
 
   - type: rpm-ostree
     install:
       - zsh
       - gammastep
+      - steam
 
     remove:
       - firefox
@@ -49,11 +78,13 @@ modules:
       - install:
           - com.stremio.Stremio
           - org.mozilla.firefox
-          - com.valvesoftware.Steam
           - com.discordapp.Discord
           - com.transmissionbt.Transmission
           - com.spotify.Client
           - org.freedesktop.Platform.codecs-extra
+          - net.davidotek.pupgui2
+          - org.chromium.Chromium
+          - io.mpv.Mpv
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
 
