@@ -22,22 +22,6 @@ modules:
     snippets:
       - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
 
-  # falcond + falcond-gui: COPR fc44 package missing falcond-gui, pull fc43 RPM as workaround
-  # falcond and falcond-gui have a circular dependency, so we install both with --nodeps
-  - type: containerfile
-    snippets:
-      - >-
-        RUN dnf install -y dnf-plugins-core &&
-        dnf copr enable -y gloriouseggroll/nobara-44 &&
-        dnf download --destdir=/tmp/falcond-rpms falcond-2.0.14 falcond-profiles &&
-        dnf copr disable -y gloriouseggroll/nobara-44 &&
-        dnf copr enable -y gloriouseggroll/nobara-43 &&
-        dnf download --destdir=/tmp/falcond-rpms falcond-gui &&
-        dnf copr disable -y gloriouseggroll/nobara-43 &&
-        dnf remove -y dnf-plugins-core &&
-        rpm -ivh --nodeps /tmp/falcond-rpms/*.rpm &&
-        rm -rf /tmp/falcond-rpms /var/cache/dnf
-
   - type: systemd
     system:
       enabled:
@@ -45,7 +29,7 @@ modules:
         - brew-update.timer
         - brew-upgrade.timer
 
-  # Gaming: Nobara COPR (gamescope) + CachyOS COPR (scx-scheds)
+  # Gaming: Nobara COPR (gamescope) + CachyOS COPR (scx-scheds for LAVD scheduler)
   - type: dnf
     repos:
       files:
@@ -57,17 +41,17 @@ modules:
         - gamescope
         - scx-scheds
 
+  # Enable scx_lavd as the default scheduler
   - type: systemd
     system:
       enabled:
-        - falcond.service
+        - scx_lavd.service
 
   - type: script
     scripts:
       - clone-dotfiles.sh
       - addbrewjustimport.sh
       - install-brew-packages.sh
-      - setup-falcond.sh
 
   - type: rpm-ostree
     install:

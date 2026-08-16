@@ -39,12 +39,11 @@ Three components from Nobara and the sched-ext ecosystem:
 | Component | Source | Purpose |
 |---|---|---|
 | Gamescope | Nobara COPR (`gloriouseggroll/nobara-44`) | Patched compositor with Nobara's resolution and compatibility fixes |
-| falcond | Nobara COPR (fc43 falcond-gui workaround) | Auto-detects games, enables performance mode, manages per-game profiles |
-| scx-scheds | CachyOS COPR (`bieszczaders/kernel-cachyos-addons`) | Provides `scx_lavd` scheduler for latency-sensitive workloads |
+| scx-scheds | CachyOS COPR (`bieszczaders/kernel-cachyos-addons`) | Provides `scx_lavd`, the default system scheduler |
 
-falcond runs as a systemd service. The config at `/etc/falcond/config.conf` starts with `scx_sched = none`. Enable LAVD by setting `scx_sched = lavd` and restarting the service.
+scx_lavd runs as a systemd service on boot. It is a latency-aware scheduler designed for gaming and interactive workloads. No manual switching required.
 
-Steam is installed as a native RPM (not Flatpak) so gamescope and falcond can interact with it directly.
+Steam is installed as a native RPM (not Flatpak) so gamescope can interact with it directly.
 
 ### Scripts
 
@@ -55,7 +54,6 @@ Scripts in `files/scripts/` run during image build:
 | `clone-dotfiles.sh` | Clones personal dotfiles to `/etc/skel/repos/dotfiles` |
 | `addbrewjustimport.sh` | Imports `brew.just` recipes into the system justfile |
 | `install-brew-packages.sh` | Creates a profile script that runs `brew bundle` on first login |
-| `setup-falcond.sh` | Creates the `falcond` group and adds the default user |
 
 ### System files
 
@@ -63,7 +61,6 @@ Files in `files/system/` copy into the image root:
 
 | Path | Purpose |
 |---|---|
-| `/etc/falcond/config.conf` | falcond configuration |
 | `/usr/share/brew/Brewfile` | Brewfile for first-login package install |
 | `/etc/rpm-ostreed.conf` | rpm-ostree daemon configuration |
 
