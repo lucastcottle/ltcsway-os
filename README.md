@@ -38,10 +38,12 @@ Three components from Nobara and the sched-ext ecosystem:
 
 | Component | Source | Purpose |
 |---|---|---|
-| Gamescope | Nobara COPR (`gloriouseggroll/nobara-44`) | Patched compositor with Nobara's resolution and compatibility fixes |
+| Gamescope | Fedora repos | Microcompositor for mouse grabbing and FPS capping |
 | scx-scheds | CachyOS COPR (`bieszczaders/kernel-cachyos-addons`) | Provides `scx_lavd`, the default system scheduler |
 
 scx_lavd runs as a systemd service on boot. It is a latency-aware scheduler designed for gaming and interactive workloads. No manual switching required.
+
+Gamescope runs in nested mode inside Sway. Use it to wrap games for mouse grabbing and frame rate limiting.
 
 Steam is installed as a native RPM (not Flatpak) so gamescope can interact with it directly.
 
