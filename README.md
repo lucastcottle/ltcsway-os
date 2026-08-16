@@ -38,8 +38,8 @@ Three components from Nobara and the sched-ext ecosystem:
 
 | Component | Source | Purpose |
 |---|---|---|
-| Gamescope | Nobara COPR (`gloriouseggroll/nobara-42`) | Patched compositor with Nobara's resolution and compatibility fixes |
-| falcond | Nobara COPR | Auto-detects games, enables performance mode, manages per-game profiles |
+| Gamescope | Nobara COPR (`gloriouseggroll/nobara-44`) | Patched compositor with Nobara's resolution and compatibility fixes |
+| falcond | Nobara COPR (fc43 falcond-gui workaround) | Auto-detects games, enables performance mode, manages per-game profiles |
 | scx-scheds | CachyOS COPR (`bieszczaders/kernel-cachyos-addons`) | Provides `scx_lavd` scheduler for latency-sensitive workloads |
 
 falcond runs as a systemd service. The config at `/etc/falcond/config.conf` starts with `scx_sched = none`. Enable LAVD by setting `scx_sched = lavd` and restarting the service.
