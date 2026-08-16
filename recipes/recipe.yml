@@ -29,26 +29,18 @@ modules:
         - brew-update.timer
         - brew-upgrade.timer
 
-  # Nobara COPR — gamescope + falcond
+  # Gaming: Nobara COPR (gamescope, falcond) + CachyOS COPR (scx-scheds)
   - type: dnf
     repos:
       files:
         - https://copr.fedorainfracloud.org/coprs/gloriouseggroll/nobara-44/repo/fedora-44/gloriouseggroll-nobara-44.repo
+        - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-44/bieszczaders-kernel-cachyos-addons.repo
     install:
       install-weak-deps: false
       packages:
         - gamescope
         - falcond
         - falcond-gui
-
-  # CachyOS COPR — scx-scheds for LAVD scheduler
-  - type: dnf
-    repos:
-      files:
-        - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-44/bieszczaders-kernel-cachyos-addons.repo
-    install:
-      install-weak-deps: false
-      packages:
         - scx-scheds
 
   - type: systemd
