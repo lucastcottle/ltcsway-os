@@ -29,19 +29,16 @@ modules:
         - brew-update.timer
         - brew-upgrade.timer
 
-  # Gaming: Nobara COPR (gamescope) + CachyOS COPR (scx-scheds for LAVD scheduler)
+  # scx-scheds: CachyOS COPR for scx_lavd scheduler
   - type: dnf
     repos:
       files:
-        - https://copr.fedorainfracloud.org/coprs/gloriouseggroll/nobara-44/repo/fedora-44/gloriouseggroll-nobara-44.repo
         - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-44/bieszczaders-kernel-cachyos-addons.repo
     install:
       install-weak-deps: false
       packages:
-        - gamescope
         - scx-scheds
-      exclude:
-        - mesa-vulkan-drivers
+        - gamescope
 
   # Enable scx_lavd as the default scheduler via scx_loader
   - type: systemd
