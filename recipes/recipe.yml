@@ -45,7 +45,7 @@ modules:
   - type: systemd
     system:
       enabled:
-        - scx_lavd.service
+        - scx.service
 
   - type: script
     scripts:
