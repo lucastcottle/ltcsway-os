@@ -40,8 +40,8 @@ modules:
       packages:
         - gamescope
         - scx-scheds
-        - steam
-      allow-erasing: true
+      exclude:
+        - mesa-vulkan-drivers
 
   # Enable scx_lavd as the default scheduler via scx_loader
   - type: systemd
@@ -59,6 +59,7 @@ modules:
     install:
       - zsh
       - gammastep
+      - steam
 
     remove:
       - firefox
