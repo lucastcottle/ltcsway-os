@@ -30,15 +30,18 @@ modules:
         - brew-upgrade.timer
 
   # scx-scheds: CachyOS COPR for scx_lavd scheduler
+  # Steam also here — allow-erasing resolves base image multilib conflicts
   - type: dnf
     repos:
       files:
         - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-44/bieszczaders-kernel-cachyos-addons.repo
     install:
       install-weak-deps: false
+      allow-erasing: true
       packages:
         - scx-scheds
         - gamescope
+        - steam
 
   # Enable scx_lavd as the default scheduler via scx_loader
   - type: systemd
@@ -56,7 +59,6 @@ modules:
     install:
       - zsh
       - gammastep
-      - steam
 
     remove:
       - firefox
