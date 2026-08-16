@@ -41,11 +41,11 @@ modules:
         - gamescope
         - scx-scheds
 
-  # Enable scx_lavd as the default scheduler
+  # Enable scx_lavd as the default scheduler via scx_loader
   - type: systemd
     system:
       enabled:
-        - scx.service
+        - scx_loader.service
 
   - type: script
     scripts:
