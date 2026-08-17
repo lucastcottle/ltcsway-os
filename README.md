@@ -8,7 +8,19 @@ Fedora Sway Atomic gives you a clean, minimal tiling desktop. Nobara and Bazzite
 
 The image includes development tools, media applications, and a gaming stack with gamescope and the scx_lavd scheduler. It does not aim to be a general-purpose distribution. It is the system I want to run on my own machine.
 
-Credit to the [wayblue](https://github.com/wayblueorg/wayblue) project. Their Sway image provides a clean foundation with sane defaults for waybar, SDDM, and the surrounding tooling. Building on top of it saves a lot of work while keeping the base minimal.
+- **Based on Wayblue (Sway + Fedora Atomic)**
+  - Clean, tiling Wayland desktop using Sway
+- **Automatic daily updates**
+  - Powered by `ublue-update` and GitHub Actions
+- **My personal dotfiles**
+  - Cloned into `~/repos/dotfiles` on first login
+- **Zsh as default shell**
+  - `zsh` is pre-installed and set as the default shell for all users automatically on first boot
+- **Distrobox for CLI tools**
+  - A distrobox container is available for installing development tools, CLIs, etc. without touching the host
+- **Preinstalled applications**
+  - Flatpaks: Firefox, Discord, Steam, Spotify, Stremio, Transmission, `org.freedesktop.Platform.codecs-extra`
+  - Native RPM tools: `zsh`, `gammastep`
 
 ## Technical breakdown
 
@@ -31,7 +43,10 @@ The image uses three layers for package management:
 | Flatpak | Desktop applications | Firefox, Discord, Spotify, mpv, Chromium |
 | Homebrew | User-space development tools | `stow`, `neovim` |
 
-Homebrew installs to `/var/home/linuxbrew/` on first boot. A Brewfile at `/usr/share/brew/Brewfile` runs on first login to install user tools. The `ublue-os/brew` OCI image provides the base Homebrew installation with auto-update timers.
+- Sets zsh as the default shell for all users
+- Clones my dotfiles into `~/repos/dotfiles`
+- Installs Flatpaks
+- Applies any custom system configs under `system/`
 
 ### Gaming
 
@@ -49,64 +64,11 @@ Gamescope runs in nested mode inside Sway. Use it to wrap games for mouse grabbi
 gamescope --rt -r 60 -- steam
 ```
 
-### Scripts
-
-Scripts in `files/scripts/` run during image build:
-
-| Script | Purpose |
-|---|---|
-| `clone-dotfiles.sh` | Clones personal dotfiles to `/etc/skel/repos/dotfiles` |
-| `addbrewjustimport.sh` | Imports `brew.just` recipes into the system justfile |
-| `install-brew-packages.sh` | Creates a profile script that runs `brew bundle` on first login |
-
-### System files
-
-Files in `files/system/` copy into the image root:
-
-| Path | Purpose |
-|---|---|
-| `/usr/share/brew/Brewfile` | Brewfile for first-login package install |
-| `/etc/scx_loader/config.toml` | scx_lavd scheduler configuration |
-| `/etc/rpm-ostreed.conf` | rpm-ostree daemon configuration |
-
-### Flatpaks
-
-Pre-installed applications:
-
-| Application | Purpose |
-|---|---|
-| Firefox | Browser |
-| Chromium | Browser |
-| Discord | Communication |
-| Spotify | Music |
-| Stremio | Media |
-| Transmission | Torrents |
-| mpv | Video playback |
-| ProtonUp-Qt | Proton GE version management |
-| `codecs-extra` | Additional media codecs |
-
-### Security
-
-The image is signed with Sigstore. Signing policies enable secure OSTree updates.
-
-### First boot
-
-1. `brew-setup.service` extracts Homebrew to `/var/home/linuxbrew/`
-2. `scx_loader.service` starts scx_lavd scheduler
-3. On first login, a profile script runs `brew bundle` to install user tools
-4. Dotfiles are cloned into `~/repos/dotfiles`
-
-### Repo structure
-
-```
-recipe.yml                  BlueBuild recipe
-files/
-  scripts/                  Build-time scripts
-  system/                   Files copied into image root
-    etc/scx_loader/         scx_lavd scheduler config
-    usr/share/brew/         Brewfile
-modules/                    (reserved for BlueBuild module overrides)
-.github/workflows/build.yml  CI pipeline
+To set up a distrobox for development tools:
+```bash
+distrobox create -n dev
+distrobox enter dev
+# then install whatever you need: sudo dnf install neovim git etc.
 ```
 
 ## Building

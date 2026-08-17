@@ -17,10 +17,10 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
-  # Pre-installed Homebrew with auto-setup on first boot
-  - type: containerfile
-    snippets:
-      - COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
+  - type: script
+    scripts:
+      - clone-dotfiles.sh
+      - set-default-shell.sh
 
   - type: systemd
     system:
