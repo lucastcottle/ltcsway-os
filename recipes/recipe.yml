@@ -42,6 +42,7 @@ modules:
         - scx-scheds
         - gamescope
         - steam
+        - mangohud
 
   # Enable scx_lavd as the default scheduler via scx_loader
   - type: systemd
