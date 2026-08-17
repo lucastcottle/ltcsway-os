@@ -18,9 +18,12 @@ The image includes development tools, media applications, and a gaming stack wit
   - `zsh` is pre-installed and set as the default shell for all users automatically on first boot
 - **Distrobox for CLI tools**
   - A distrobox container is available for installing development tools, CLIs, etc. without touching the host
+- **Gaming stack**
+  - Steam, Gamescope, and MangoHud installed natively via the CachyOS COPR
+  - `scx_lavd` scheduler (BPF-based, latency-aware) loaded at boot via `scx_loader` for better frame pacing and input latency
 - **Preinstalled applications**
-  - Flatpaks: Firefox, Discord, Steam, Spotify, Stremio, Transmission, `org.freedesktop.Platform.codecs-extra`
-  - Native RPM tools: `zsh`, `gammastep`
+  - Flatpaks: Firefox, Discord, Spotify, Stremio, Transmission, Chromium, mpv, ProtonUp-Qt, `org.freedesktop.Platform.codecs-extra`
+  - Native RPM tools: `zsh`, `gammastep`, `gamescope`, `mangohud`
 
 ## Technical breakdown
 
@@ -41,12 +44,21 @@ The image uses three layers for package management:
 | dnf | Gaming and scheduler packages (with dependency resolution) | `gamescope`, `scx-scheds`, `steam` |
 | rpm-ostree | System packages | `zsh`, `gammastep` |
 | Flatpak | Desktop applications | Firefox, Discord, Spotify, mpv, Chromium |
-| Homebrew | User-space development tools | `stow`, `neovim` |
+| Distrobox | User-space development tools | `neovim`, `git`, etc. (create with `distrobox create`) |
+
+### First boot behavior
 
 - Sets zsh as the default shell for all users
 - Clones my dotfiles into `~/repos/dotfiles`
 - Installs Flatpaks
 - Applies any custom system configs under `system/`
+
+For development tools, create a distrobox:
+```bash
+distrobox create -n dev
+distrobox enter dev
+sudo dnf install neovim git
+```
 
 ### Gaming
 
@@ -62,13 +74,6 @@ Gamescope runs in nested mode inside Sway. Use it to wrap games for mouse grabbi
 
 ```
 gamescope --rt -r 60 -- steam
-```
-
-To set up a distrobox for development tools:
-```bash
-distrobox create -n dev
-distrobox enter dev
-# then install whatever you need: sudo dnf install neovim git etc.
 ```
 
 ## Building

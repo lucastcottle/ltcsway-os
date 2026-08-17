@@ -25,9 +25,8 @@ modules:
   - type: systemd
     system:
       enabled:
-        - brew-setup.service
-        - brew-update.timer
-        - brew-upgrade.timer
+        - set-zsh-default.service
+        - scx_loader.service
 
   # scx-scheds: CachyOS COPR for scx_lavd scheduler
   # Steam also here — allow-erasing resolves base image multilib conflicts
@@ -43,18 +42,6 @@ modules:
         - gamescope
         - steam
         - mangohud
-
-  # Enable scx_lavd as the default scheduler via scx_loader
-  - type: systemd
-    system:
-      enabled:
-        - scx_loader.service
-
-  - type: script
-    scripts:
-      - clone-dotfiles.sh
-      - addbrewjustimport.sh
-      - install-brew-packages.sh
 
   - type: rpm-ostree
     install:
