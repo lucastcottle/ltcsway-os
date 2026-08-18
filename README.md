@@ -19,7 +19,7 @@ The image includes development tools, media applications, and a gaming stack wit
 - **Distrobox for CLI tools**
   - A distrobox container is available for installing development tools, CLIs, etc. without touching the host
 - **Gaming stack**
-  - Steam, Gamescope, and MangoHud installed natively via the CachyOS COPR
+  - Steam, Gamescope, and MangoHud run in a distrobox container based on [bazzite-arch](https://github.com/ublue-os/bazzite-arch)
   - `scx_lavd` scheduler (BPF-based, latency-aware) loaded at boot via `scx_loader` for better frame pacing and input latency
 - **Preinstalled applications**
   - Flatpaks: Firefox, Discord, Spotify, Stremio, Transmission, Chromium, mpv, ProtonUp-Qt, `org.freedesktop.Platform.codecs-extra`
@@ -44,7 +44,7 @@ The image uses three layers for package management:
 | dnf | Gaming and scheduler packages (with dependency resolution) | `gamescope`, `scx-scheds`, `steam` |
 | rpm-ostree | System packages | `zsh`, `gammastep` |
 | Flatpak | Desktop applications | Firefox, Discord, Spotify, mpv, Chromium |
-| Distrobox | User-space development tools | `neovim`, `git`, etc. (create with `distrobox create`) |
+| Distrobox | Development tools and gaming | `neovim`, `git`, Steam, etc. |
 
 ### First boot behavior
 
@@ -55,26 +55,20 @@ The image uses three layers for package management:
 
 For development tools, create a distrobox:
 ```bash
-distrobox create -n dev
+distrobox create -n dev --image ghcr.io/ublue-os/bazzite-arch:latest
 distrobox enter dev
 sudo dnf install neovim git
 ```
+Steam, MangoHud, and other gaming tools are available inside this container out of the box.
 
 ### Gaming
 
 | Component | Source | Purpose |
 |---|---|---|
-| Gamescope | Fedora repos | Microcompositor for mouse grabbing and FPS capping |
 | scx-scheds | CachyOS COPR (`bieszczaders/kernel-cachyos-addons`) | Provides `scx_lavd`, the default system scheduler |
-| Steam | RPM Fusion (via dnf) | Gaming platform, native RPM for gamescope integration |
+| Steam, MangoHud | bazzite-arch distrobox | Gaming platform and performance overlay |
 
 scx_lavd runs as a systemd service on boot via `scx_loader`. It is a latency-aware scheduler designed for gaming and interactive workloads. The scheduler is configured in `/etc/scx_loader/config.toml`.
-
-Gamescope runs in nested mode inside Sway. Use it to wrap games for mouse grabbing and frame rate limiting:
-
-```
-gamescope --rt -r 60 -- steam
-```
 
 ## Building
 

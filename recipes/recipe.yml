@@ -23,7 +23,6 @@ modules:
       - set-default-shell.sh
 
   # scx-scheds: CachyOS COPR for scx_lavd scheduler
-  # Steam also here — allow-erasing resolves base image multilib conflicts
   - type: dnf
     repos:
       files:
@@ -33,9 +32,6 @@ modules:
       allow-erasing: true
       packages:
         - scx-scheds
-        - gamescope
-        - steam
-        - mangohud
 
   - type: systemd
     system:
