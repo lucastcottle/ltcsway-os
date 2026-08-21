@@ -1,74 +1,70 @@
 # ltcSway-os
 
-A personal Fedora Atomic desktop image for Sway, built on [wayblue](https://github.com/wayblueorg/wayblue). Targets a middle ground between a minimal Fedora Sway Atomic install and full-featured gaming distributions like Nobara or Bazzite. Designed for daily development work with light gaming on the side.
+A personal Fedora Atomic desktop image. Built on [wayblue](https://github.com/wayblueorg/wayblue) (Sway + Fedora Atomic). Designed for daily development work with light gaming on the side.
 
-## About
+This image takes the wayblue Sway base and adds my dotfiles, preferred applications, and a few system tweaks. It does not aim to be a general-purpose distribution. It is the system I want to run on my own machine.
 
-Fedora Sway Atomic gives you a clean, minimal tiling desktop. Nobara and Bazzite give you a tuned gaming experience with everything pre-configured. This image sits between those two. It takes the wayblue Sway base — which provides sensible defaults for a working Wayland desktop without extra opinion — and layers on the tools and applications I actually use.
+## What is included
 
-The image includes development tools, media applications, and a gaming stack with gamescope and the scx_lavd scheduler. It does not aim to be a general-purpose distribution. It is the system I want to run on my own machine.
+- **Sway** tiling window manager with wayblue defaults
+- **Zsh** as the default shell for all users (set on first boot)
+- **Gammastep** for night light / color temperature
+- **Distrobox** for development tools and gaming
+- **Flatpak applications**: Firefox, Discord, Spotify, Stremio, Transmission, mpv, codecs-extra
+- **Signed images** with Sigstore cosign
+- **Daily builds** via GitHub Actions
 
-- **Based on Wayblue (Sway + Fedora Atomic)**
-  - Clean, tiling Wayland desktop using Sway
-- **Automatic daily updates**
-  - Powered by `ublue-update` and GitHub Actions
-- **My personal dotfiles**
-  - Cloned into `~/repos/dotfiles` on first login
-- **Zsh as default shell**
-  - `zsh` is pre-installed and set as the default shell for all users automatically on first boot
-- **Distrobox for CLI tools**
-  - A distrobox container is available for installing development tools, CLIs, etc. without touching the host
-- **Gaming stack**
-  - Steam, Gamescope, and MangoHud run in a distrobox container based on [bazzite-arch](https://github.com/ublue-os/bazzite-arch)
-  - `scx_lavd` scheduler (BPF-based, latency-aware) loaded at boot via `scx_loader` for better frame pacing and input latency
-- **Preinstalled applications**
-  - Flatpaks: Firefox, Discord, Spotify, Stremio, Transmission, Chromium, mpv, ProtonUp-Qt, `org.freedesktop.Platform.codecs-extra`
-  - Native RPM tools: `zsh`, `gammastep`, `gamescope`, `mangohud`
+## What is not included
 
-## Technical breakdown
+- Firefox RPM (replaced with Flatpak for sandboxing and easier updates)
+- Homebrew (use distrobox instead)
+- Gamescope, MangoHud, or scheduler tweaks on the host (gaming runs in a distrobox)
 
-### Base
+## How it works
 
-- **Base image**: `ghcr.io/wayblueorg/sway`
-- **Build system**: [BlueBuild](https://blue-build.org/)
-- **Recipe**: `recipe.yml`
-- **Builds**: GitHub Actions, daily at 06:00 UTC
-- **Updates**: Automatic via `ublue-update`
+The image builds from [`recipe.yml`](./recipe.yml) using [BlueBuild](https://blue-build.org/). GitHub Actions builds and signs a new image every day at 06:00 UTC. Systems that run this image update automatically via `ublue-update`.
 
-### Package management
+The base image is `ghcr.io/wayblueorg/sway`. This image layers on top of it.
 
-The image uses three layers for package management:
+## First boot
 
-| Layer | Purpose | Examples |
-|---|---|---|
-| dnf | Gaming and scheduler packages (with dependency resolution) | `gamescope`, `scx-scheds`, `steam` |
-| rpm-ostree | System packages | `zsh`, `gammastep` |
-| Flatpak | Desktop applications | Firefox, Discord, Spotify, mpv, Chromium |
-| Distrobox | Development tools and gaming | `neovim`, `git`, Steam, etc. |
+On the first boot after install or rebase:
 
-### First boot behavior
+1. The system sets zsh as the default shell for all users.
+2. The system clones my dotfiles into `~/repos/dotfiles`.
+3. Flatpak installs the applications listed above.
 
-- Sets zsh as the default shell for all users
-- Clones my dotfiles into `~/repos/dotfiles`
-- Installs Flatpaks
-- Applies any custom system configs under `system/`
+To apply dotfiles manually:
 
-For development tools, create a distrobox:
+```bash
+cd ~/repos/dotfiles
+stow .
+```
+
+## Gaming
+
+Steam, MangoHud, and related tools run inside a distrobox container. This keeps the host image small and avoids multilib dependency conflicts.
+
+To create the gaming container:
+
+```bash
+distrobox create -n steam --image ghcr.io/ublue-os/toolboxes/steambox:latest
+distrobox enter steam
+```
+
+Steam, Lutris, MangoHud, vkBasalt, and LatencyFleX are available inside the container out of the box.
+
+## Development tools
+
+For development tools, create a separate distrobox:
+
 ```bash
 distrobox create -n dev --image ghcr.io/ublue-os/bazzite-arch:latest
 distrobox enter dev
 sudo dnf install neovim git
 ```
-Steam, MangoHud, and other gaming tools are available inside this container out of the box.
 
-### Gaming
-
-| Component | Source | Purpose |
-|---|---|---|
-| scx-scheds | CachyOS COPR (`bieszczaders/kernel-cachyos-addons`) | Provides `scx_lavd`, the default system scheduler |
-| Steam, MangoHud | bazzite-arch distrobox | Gaming platform and performance overlay |
-
-scx_lavd runs as a systemd service on boot via `scx_loader`. It is a latency-aware scheduler designed for gaming and interactive workloads. The scheduler is configured in `/etc/scx_loader/config.toml`.
+Distrobox shares your home directory with the host. Files persist across container restarts.
 
 ## Building
 
@@ -76,4 +72,4 @@ Fork this repo and edit `recipe.yml`. The GitHub Action builds and signs the ima
 
 ## License
 
-Upstream projects retain their licenses. Everything else including my dotfiles are MIT unless noted otherwise.
+Upstream projects retain their licenses. My dotfiles are MIT unless noted otherwise.
