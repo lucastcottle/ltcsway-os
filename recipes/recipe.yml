@@ -22,22 +22,10 @@ modules:
       - clone-dotfiles.sh
       - set-default-shell.sh
 
-  # scx-scheds: CachyOS COPR for scx_lavd scheduler
-  - type: dnf
-    repos:
-      files:
-        - https://copr.fedorainfracloud.org/coprs/bieszczaders/kernel-cachyos-addons/repo/fedora-44/bieszczaders-kernel-cachyos-addons.repo
-    install:
-      install-weak-deps: false
-      allow-erasing: true
-      packages:
-        - scx-scheds
-
   - type: systemd
     system:
       enabled:
         - set-zsh-default.service
-        - scx_loader.service
 
   - type: rpm-ostree
     install:
@@ -57,8 +45,6 @@ modules:
           - com.transmissionbt.Transmission
           - com.spotify.Client
           - org.freedesktop.Platform.codecs-extra
-          - net.davidotek.pupgui2
-          - org.chromium.Chromium
           - io.mpv.Mpv
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
